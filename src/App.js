@@ -1,12 +1,28 @@
 import React from 'react'
+import RenderBooks from './RenderBooks';
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
+
+  formatBooks (books) {
+    return {
+      read: books.filter(book => book.shelf === 'read'),
+      wantToRead: books.filter(book => book.shelf === 'wantToRead'),
+      currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
+    }
+  }
+
   componentDidMount() {
       BooksAPI.getAll().then((books)=> {
-        console.log(books);
-        this.setState({ books });
+        const formattedBooks = this.formatBooks(books);
+        this.setState({
+            books: {
+                read: formattedBooks.read,
+                wantToRead: formattedBooks.wantToRead,
+                currentlyReading: formattedBooks.currentlyReading,
+            }
+        });
       });
   }
 
@@ -17,14 +33,17 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    books : [],
+    books : {
+      read: [],
+      wantToRead: [],
+      currentlyReading: [],
+    },
     showSearchPage: false
   };
   render() {
       // handleOnchange(e){
       //   console.log(e);
       // }
-
 
       return (
       <div className="app">
@@ -33,16 +52,7 @@ class BooksApp extends React.Component {
             <div className="search-books-bar">
               <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
                 <input type="text" placeholder="Search by title or author"/>
-
               </div>
             </div>
             <div className="search-books-results">
@@ -57,31 +67,30 @@ class BooksApp extends React.Component {
             <div className="list-books-content">
               <div>
                 <div className="bookshelf">
-                  <h2 className="bookshelf-title">{this.state.books.shelf === 'wantToRead' ? 'Want to Read' : this.state.books.shelf === 'Read' ? 'Read' : 'Currently Reading'}</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                        {this.state.books.map((book)=>(
-                            <li key={book.id}>
-                              <div className="book">
-                                <div className="book-top">
-                                  <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.smallThumbnail}")` }}></div>
-                                  <div className="book-shelf-changer">
-                                    <select>
-                                      <option value="none" disabled>Move to...</option>
-                                      <option value="currentlyReading">Currently Reading</option>
-                                      <option value="wantToRead">Want to Read</option>
-                                      <option value="read">Read</option>
-                                      <option value="none">None</option>
-                                    </select>
-                                  </div>
-                                </div>
-                                <div className="book-title">{book.title}</div>
-                                <div className="book-authors">{book.authors}</div>
-                              </div>
-                            </li>
-                        ))}
-                    </ol>
-                  </div>
+                    <h2 className="bookshelf-title">Read</h2>
+                    <div className="bookshelf-books">
+                        <ol className="books-grid">
+                            {this.state.books.read.map((book)=>(
+                                <RenderBooks book={book} key={book.id}/>
+                            ))}
+                        </ol>
+                    </div>
+                    <h2 className="bookshelf-title">Want to Read</h2>
+                    <div className="bookshelf-books">
+                        <ol className="books-grid">
+                            {this.state.books.wantToRead.map((book)=>(
+                                <RenderBooks book={book} key={book.id}/>
+                            ))}
+                        </ol>
+                    </div>
+                    <h2 className="bookshelf-title">Currently Reading</h2>
+                    <div className="bookshelf-books">
+                        <ol className="books-grid">
+                            {this.state.books.currentlyReading.map((book)=>(
+                                <RenderBooks book={book} key={book.id}/>
+                            ))}
+                        </ol>
+                    </div>
                 </div>
               </div>
             </div>
