@@ -5,45 +5,51 @@ import './App.css'
 
 class BooksApp extends React.Component {
 
-  formatBooks (books) {
-    return {
-      read: books.filter(book => book.shelf === 'read'),
-      wantToRead: books.filter(book => book.shelf === 'wantToRead'),
-      currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
-    }
-  }
 
+  // handleOnchange = (book) => (e) => {
+  //     BooksAPI.update(book, e.target.value).then(books => {
+  //         console.log(books);
+  //         // this.setState({ books });
+  //     });
+  //   };
+
+  // getBookById = (books, bookId) => {
+  //     return books.filter(book => book.id === bookId)[0]
+  // }
+    state = {
+        /**
+         * TODO: Instead of using this state variable to keep track of which page
+         * we're on, use the URL in the browser's address bar. This will ensure that
+         * users can use the browser's back and forward buttons to navigate between
+         * pages, as well as provide a good URL they can bookmark and share.
+         */
+        books : [],
+        read:[],
+        wantToRead: [],
+        currentlyReading :[],
+
+        showSearchPage: false,
+    };
   componentDidMount() {
+
       BooksAPI.getAll().then((books)=> {
-        const formattedBooks = this.formatBooks(books);
+          let read = books.filter(book => book.shelf === 'read');
+          let wantToRead = books.filter(book => book.shelf === 'wantToRead');
+          let currentlyReading = books.filter(book => book.shelf === 'currentlyReading');
+          // console.log(read);
+
         this.setState({
-            books: {
-                read: formattedBooks.read,
-                wantToRead: formattedBooks.wantToRead,
-                currentlyReading: formattedBooks.currentlyReading,
-            }
+            read : read,
+            wantToRead: wantToRead,
+            currentlyReading: currentlyReading
         });
       });
   }
 
-  state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    books : {
-      read: [],
-      wantToRead: [],
-      currentlyReading: [],
-    },
-    showSearchPage: false
-  };
+
+
+
   render() {
-      // handleOnchange(e){
-      //   console.log(e);
-      // }
 
       return (
       <div className="app">
@@ -70,28 +76,32 @@ class BooksApp extends React.Component {
                     <h2 className="bookshelf-title">Read</h2>
                     <div className="bookshelf-books">
                         <ol className="books-grid">
-                            {this.state.books.read.map((book)=>(
-                                <RenderBooks book={book} key={book.id}/>
-                            ))}
-                        </ol>
-                    </div>
-                    <h2 className="bookshelf-title">Want to Read</h2>
-                    <div className="bookshelf-books">
-                        <ol className="books-grid">
-                            {this.state.books.wantToRead.map((book)=>(
-                                <RenderBooks book={book} key={book.id}/>
-                            ))}
-                        </ol>
-                    </div>
-                    <h2 className="bookshelf-title">Currently Reading</h2>
-                    <div className="bookshelf-books">
-                        <ol className="books-grid">
-                            {this.state.books.currentlyReading.map((book)=>(
-                                <RenderBooks book={book} key={book.id}/>
-                            ))}
+                            {this.state.read.map((book)=> {
+                                return <RenderBooks  book={book} key={book.id}/>
+                            })}
                         </ol>
                     </div>
                 </div>
+                  <div className="bookshelf">
+                      <h2 className="bookshelf-title">Currently</h2>
+                      <div className="bookshelf-books">
+                          <ol className="books-grid">
+                              {this.state.currentlyReading.map((book)=> {
+                                  return <RenderBooks  book={book} key={book.id}/>
+                              })}
+                          </ol>
+                      </div>
+                  </div>
+                  <div className="bookshelf">
+                      <h2 className="bookshelf-title">Want to Read</h2>
+                      <div className="bookshelf-books">
+                          <ol className="books-grid">
+                              {this.state.wantToRead.map((book)=> {
+                                  return <RenderBooks  book={book} key={book.id}/>
+                              })}
+                          </ol>
+                      </div>
+                  </div>
               </div>
             </div>
             <div className="open-search">
