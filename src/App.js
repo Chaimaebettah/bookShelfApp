@@ -1,21 +1,10 @@
 import React from 'react'
-import RenderBooks from './RenderBooks';
+import Search from './Search'
+import BookShelf from './BookShelf'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 class BooksApp extends React.Component {
-
-
-  // handleOnchange = (book) => (e) => {
-  //     BooksAPI.update(book, e.target.value).then(books => {
-  //         console.log(books);
-  //         // this.setState({ books });
-  //     });
-  //   };
-
-  // getBookById = (books, bookId) => {
-  //     return books.filter(book => book.id === bookId)[0]
-  // }
     state = {
         /**
          * TODO: Instead of using this state variable to keep track of which page
@@ -23,95 +12,83 @@ class BooksApp extends React.Component {
          * users can use the browser's back and forward buttons to navigate between
          * pages, as well as provide a good URL they can bookmark and share.
          */
-        books : [],
-        read:[],
+        books: [],
+        searchResults: [],
+        read: [],
         wantToRead: [],
-        currentlyReading :[],
-
+        currentlyReading: [],
         showSearchPage: false,
+        searchValue: '',
     };
-  componentDidMount() {
 
-      BooksAPI.getAll().then((books)=> {
-          let read = books.filter(book => book.shelf === 'read');
-          let wantToRead = books.filter(book => book.shelf === 'wantToRead');
-          let currentlyReading = books.filter(book => book.shelf === 'currentlyReading');
-          // console.log(read);
+    formatBooks = (books) => ({
+        read: books.filter(book => book.shelf === 'read'),
+        wantToRead: books.filter(book => book.shelf === 'wantToRead'),
+        currentlyReading: books.filter(book => book.shelf === 'currentlyReading'),
+    });
 
-        this.setState({
-            read : read,
-            wantToRead: wantToRead,
-            currentlyReading: currentlyReading
+    handleOnchange = (book) => (e) => {
+        BooksAPI.update(book, e.target.value).then(books => {
+            BooksAPI.getAll().then(books => {
+                this.setState({...this.formatBooks(books)});
+            })
         });
-      });
-  }
+    };
+
+    updateSearch = (e) => {
+        this.setState({...this.state, searchValue: e.target.value});
+        BooksAPI.search(this.state.searchValue.trim(), 1).then((books) => {
+
+            if (this.state.searchValue) {
+                this.setState({...this.state, searchResults: books});
+            } else {
+                this.setState({...this.state, searchResults: []})
+            }
+            if (!books) return;
+
+        });
+
+    };
+
+    getBookShelf = () => {
+        BooksAPI.getAll().then((books) => {
+            this.setState({...this.formatBooks(books)});
+        });
+    };
 
 
+    renderSearchPage = () => {
+        this.setState({ ...this.state, showSearchPage : true})
+    };
 
+    render() {
+        return (
+            <div className="app">
+                {this.state.showSearchPage ? (
+                    <Search
+                        updateSearch={this.updateSearch}
+                        searchValue={this.state.searchValue}
+                        handleOnchange={this.handleOnchange}
+                        books={this.state.searchResults}
+                        showSearchPage={this.showSearchPage}
 
-  render() {
-
-      return (
-      <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author"/>
-              </div>
+                    />
+                ) : (
+                    <BookShelf
+                        showSearchPage={this.state.showSearchPage}
+                        getBookShelf={this.getBookShelf}
+                        handleOnchange={this.handleOnchange}
+                        books={{
+                            read: this.state.read,
+                            wantToRead: this.state.wantToRead,
+                            currentlyReading: this.state.currentlyReading,
+                        }}
+                        renderSearchPage={this.renderSearchPage}
+                    />
+                )}
             </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            <div className="list-books-content">
-              <div>
-                <div className="bookshelf">
-                    <h2 className="bookshelf-title">Read</h2>
-                    <div className="bookshelf-books">
-                        <ol className="books-grid">
-                            {this.state.read.map((book)=> {
-                                return <RenderBooks  book={book} key={book.id}/>
-                            })}
-                        </ol>
-                    </div>
-                </div>
-                  <div className="bookshelf">
-                      <h2 className="bookshelf-title">Currently</h2>
-                      <div className="bookshelf-books">
-                          <ol className="books-grid">
-                              {this.state.currentlyReading.map((book)=> {
-                                  return <RenderBooks  book={book} key={book.id}/>
-                              })}
-                          </ol>
-                      </div>
-                  </div>
-                  <div className="bookshelf">
-                      <h2 className="bookshelf-title">Want to Read</h2>
-                      <div className="bookshelf-books">
-                          <ol className="books-grid">
-                              {this.state.wantToRead.map((book)=> {
-                                  return <RenderBooks  book={book} key={book.id}/>
-                              })}
-                          </ol>
-                      </div>
-                  </div>
-              </div>
-            </div>
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
+        )
+    }
 }
 
 export default BooksApp

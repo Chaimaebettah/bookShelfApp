@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
 
-class RenderBooks extends Component {
+class Book extends Component {
     render () {
         const { book } = this.props;
         const { handleOnchange } =  this.props;
 
-        // console.log(book);
         return (
             <li key={book.id}>
                 <div className="book">
@@ -33,4 +32,4 @@ class RenderBooks extends Component {
 
 
 
-export default RenderBooks;
+export default Book;
