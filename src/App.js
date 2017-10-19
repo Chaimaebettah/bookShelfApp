@@ -63,7 +63,7 @@ class BooksApp extends React.Component {
     render() {
         return (
             <div className="app">
-                <Route to="/" exact render={() => (
+                <Route path="/" exact render={() => (
                     <BookShelf
                         showSearchPage={this.state.showSearchPage}
                         getBookShelf={this.getBookShelf}
@@ -77,7 +77,7 @@ class BooksApp extends React.Component {
                     />
                 )}
                 />
-                <Route to="/search" exact render={() => (
+                <Route path="/search" exact render={() => (
                     <Search
                         updateSearch={this.updateSearch}
                         searchValue={this.state.searchValue}
