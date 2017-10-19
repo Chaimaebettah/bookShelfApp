@@ -18,7 +18,7 @@ class BooksApp extends React.Component {
         read: [],
         wantToRead: [],
         currentlyReading: [],
-        showSearchPage: false,
+        // showSearchPage: false,
         searchValue: '',
     };
 
@@ -43,7 +43,6 @@ class BooksApp extends React.Component {
                 this.setState({...this.state, searchResults: []});
                 return;
             }
-            ;
 
             this.setState({...this.state, searchResults: response});
         })
@@ -57,26 +56,14 @@ class BooksApp extends React.Component {
     };
 
 
-    renderSearchPage = () => {
-        this.setState({...this.state, showSearchPage: true})
-    };
+    // renderSearchPage = () => {
+    //     this.setState({...this.state, showSearchPage: true})
+    // };
 
     render() {
         return (
             <div className="app">
-                <Route to="/search" render={() => (
-                    <Search
-                        updateSearch={this.updateSearch}
-                        searchValue={this.state.searchValue}
-                        handleOnchange={this.handleOnchange}
-                        books={this.state.searchResults}
-                        showSearchPage={this.showSearchPage}
-
-                    />
-                )}
-                />
-
-                <Route exact to="/" render={() => (
+                <Route to="/" exact render={() => (
                     <BookShelf
                         showSearchPage={this.state.showSearchPage}
                         getBookShelf={this.getBookShelf}
@@ -86,7 +73,18 @@ class BooksApp extends React.Component {
                             wantToRead: this.state.wantToRead,
                             currentlyReading: this.state.currentlyReading,
                         }}
-                        renderSearchPage={this.renderSearchPage}
+                        // renderSearchPage={this.renderSearchPage}
+                    />
+                )}
+                />
+                <Route to="/search" exact render={() => (
+                    <Search
+                        updateSearch={this.updateSearch}
+                        searchValue={this.state.searchValue}
+                        handleOnchange={this.handleOnchange}
+                        books={this.state.searchResults}
+                        // showSearchPage={this.showSearchPage}
+
                     />
                 )}
                 />
