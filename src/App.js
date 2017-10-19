@@ -1,4 +1,5 @@
 import React from 'react'
+import {Route} from 'react-router-dom';
 import Search from './Search'
 import BookShelf from './BookShelf'
 import * as BooksAPI from './BooksAPI'
@@ -30,24 +31,23 @@ class BooksApp extends React.Component {
     handleOnchange = (book) => (e) => {
         BooksAPI.update(book, e.target.value).then(books => {
             BooksAPI.getAll().then(books => {
-                this.setState({...this.formatBooks(books)});
+                this.setState({...this.state, ...this.formatBooks(books)});
             })
         });
     };
 
     updateSearch = (e) => {
         this.setState({...this.state, searchValue: e.target.value});
-        BooksAPI.search(this.state.searchValue.trim(), 1).then((books) => {
-
-            if (this.state.searchValue) {
-                this.setState({...this.state, searchResults: books});
-            } else {
-                this.setState({...this.state, searchResults: []})
+        BooksAPI.search(this.state.searchValue.trim(), 1).then((response) => {
+            if (!response || response.error || this.state.searchValue.length < 1) {
+                this.setState({...this.state, searchResults: []});
+                return;
             }
-            if (!books) return;
+            ;
 
-        });
-
+            this.setState({...this.state, searchResults: response});
+        })
+            .catch(console.error);
     };
 
     getBookShelf = () => {
@@ -58,13 +58,13 @@ class BooksApp extends React.Component {
 
 
     renderSearchPage = () => {
-        this.setState({ ...this.state, showSearchPage : true})
+        this.setState({...this.state, showSearchPage: true})
     };
 
     render() {
         return (
             <div className="app">
-                {this.state.showSearchPage ? (
+                <Route to="/search" render={() => (
                     <Search
                         updateSearch={this.updateSearch}
                         searchValue={this.state.searchValue}
@@ -73,7 +73,10 @@ class BooksApp extends React.Component {
                         showSearchPage={this.showSearchPage}
 
                     />
-                ) : (
+                )}
+                />
+
+                <Route exact to="/" render={() => (
                     <BookShelf
                         showSearchPage={this.state.showSearchPage}
                         getBookShelf={this.getBookShelf}
@@ -86,9 +89,11 @@ class BooksApp extends React.Component {
                         renderSearchPage={this.renderSearchPage}
                     />
                 )}
+                />
             </div>
         )
     }
 }
+
 
 export default BooksApp

@@ -1,24 +1,16 @@
-import React, { Component } from 'react'
-import Book from './Book'
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import Book from './Book';
 
 
 
 class BookShelf extends Component {
-    // state = {
-    //     showSearchPage: false
-    // };
+
     componentDidMount() {
         this.props.getBookShelf();
-        // this.setState({ showSearchPage: this.props.showSearchPage })
     }
 
-
-
     render() {
-        // console.log('inside of the render method',this.props);
-        // let showSearchPages = this.props.showSearchPage;
-        // console.log(showSearchPages);
-
         return (
             <div className="list-books">
                 <div className="list-books-title">
@@ -62,7 +54,7 @@ class BookShelf extends Component {
                     </div>
                 </div>
                 <div className="open-search">
-                    <a onClick={() => this.props.renderSearchPage()}>Add a book</a>
+                    <Link  to="/search" onClick={() => this.props.renderSearchPage()}>Add a book</Link>
                 </div>
             </div>
         )
