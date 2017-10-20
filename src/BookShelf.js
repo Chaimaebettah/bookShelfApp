@@ -24,7 +24,7 @@ class BookShelf extends Component {
                                 <ol className="books-grid">
                                     {this.props.books.read.map((book) => {
                                         return <Book handleOnchange={this.props.handleOnchange(book)}
-                                                            book={book} key={book.id}/>
+                                                            book={book} key={book.id} value={book.shelf}/>
                                     })}
                                 </ol>
                             </div>
@@ -35,7 +35,7 @@ class BookShelf extends Component {
                                 <ol className="books-grid">
                                     {this.props.books.currentlyReading.map((book) => {
                                         return <Book handleOnchange={this.props.handleOnchange(book)}
-                                                            book={book} key={book.id}/>
+                                                            book={book} key={book.id} value={book.shelf}/>
                                     })}
                                 </ol>
                             </div>
@@ -46,7 +46,7 @@ class BookShelf extends Component {
                                 <ol className="books-grid">
                                     {this.props.books.wantToRead.map((book) => {
                                         return <Book handleOnchange={this.props.handleOnchange(book)}
-                                                            book={book} key={book.id}/>
+                                                            book={book} key={book.id} value={book.shelf}/>
                                     })}
                                 </ol>
                             </div>

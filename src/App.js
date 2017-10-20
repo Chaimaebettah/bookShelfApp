@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Search from './Search'
 import BookShelf from './BookShelf'
 import * as BooksAPI from './BooksAPI'
@@ -18,7 +18,6 @@ class BooksApp extends React.Component {
         read: [],
         wantToRead: [],
         currentlyReading: [],
-        // showSearchPage: false,
         searchValue: '',
     };
 
@@ -39,6 +38,8 @@ class BooksApp extends React.Component {
     updateSearch = (e) => {
         this.setState({...this.state, searchValue: e.target.value});
         BooksAPI.search(this.state.searchValue.trim(), 1).then((response) => {
+            console.log('search response',response);
+
             if (!response || response.error || this.state.searchValue.length < 1) {
                 this.setState({...this.state, searchResults: []});
                 return;
@@ -55,11 +56,6 @@ class BooksApp extends React.Component {
         });
     };
 
-
-    // renderSearchPage = () => {
-    //     this.setState({...this.state, showSearchPage: true})
-    // };
-
     render() {
         return (
             <div className="app">
@@ -73,7 +69,6 @@ class BooksApp extends React.Component {
                             wantToRead: this.state.wantToRead,
                             currentlyReading: this.state.currentlyReading,
                         }}
-                        // renderSearchPage={this.renderSearchPage}
                     />
                 )}
                 />
@@ -83,7 +78,6 @@ class BooksApp extends React.Component {
                         searchValue={this.state.searchValue}
                         handleOnchange={this.handleOnchange}
                         books={this.state.searchResults}
-                        // showSearchPage={this.showSearchPage}
 
                     />
                 )}
