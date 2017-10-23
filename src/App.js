@@ -28,33 +28,54 @@ class BooksApp extends React.Component {
     });
 
     handleOnchange = (book) => (e) => {
-        BooksAPI.update(book, e.target.value).then(books => {
+        BooksAPI.update(book, e.target.value).then(() => {
             BooksAPI.getAll().then(books => {
-                this.setState({...this.state, ...this.formatBooks(books)});
+                this.setState({...this.state, books: books, ...this.formatBooks(books)});
+
             })
         });
     };
 
     updateSearch = (e) => {
+
         this.setState({...this.state, searchValue: e.target.value});
-        BooksAPI.search(this.state.searchValue.trim(), 1).then((response) => {
-            console.log('search response',response);
+
+        BooksAPI.search(e.target.value.trim(), 1).then((response) => {
 
             if (!response || response.error || this.state.searchValue.length < 1) {
                 this.setState({...this.state, searchResults: []});
                 return;
             }
+            const searchBooks = response.slice(0);
 
-            this.setState({...this.state, searchResults: response});
+            this.state.books.forEach(shelfBook => {
+                searchBooks.forEach(searchBook => {
+                    if (!searchBook.shelf) {
+                        searchBook.shelf = 'none';
+                    }
+
+                    if (shelfBook.id === searchBook.id) {
+                        searchBook.shelf = shelfBook.shelf;
+                    }
+                })
+            });
+
+            this.setState({...this.state, searchResults: searchBooks});
         })
             .catch(console.error);
     };
 
     getBookShelf = () => {
         BooksAPI.getAll().then((books) => {
-            this.setState({...this.formatBooks(books)});
+            this.setState({
+                books: books,
+                ...this.formatBooks(books)});
         });
     };
+
+    componentDidMount() {
+        this.getBookShelf();
+    }
 
     render() {
         return (

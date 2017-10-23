@@ -6,10 +6,6 @@ import Book from './Book';
 
 class BookShelf extends Component {
 
-    componentDidMount() {
-        this.props.getBookShelf();
-    }
-
     render() {
         return (
             <div className="list-books">
