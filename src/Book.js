@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 
 
 class Book extends Component {
-
     render () {
-
         const { book } = this.props;
         const { handleOnchange } =  this.props;
 
@@ -29,8 +27,7 @@ class Book extends Component {
             </li>
         )
     }
-};
-
+}
 
 
 export default Book;

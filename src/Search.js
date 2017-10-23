@@ -4,9 +4,7 @@ import Book from './Book';
 
 
 class Search extends Component {
-
     render() {
-
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -26,5 +24,6 @@ class Search extends Component {
         )
     }
 }
+
 
 export default Search;

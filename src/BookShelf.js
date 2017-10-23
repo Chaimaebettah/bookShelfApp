@@ -5,7 +5,6 @@ import Book from './Book';
 
 
 class BookShelf extends Component {
-
     render() {
         return (
             <div className="list-books">
@@ -56,7 +55,6 @@ class BookShelf extends Component {
         )
     }
 }
-
 
 
 export default BookShelf;

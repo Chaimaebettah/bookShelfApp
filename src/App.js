@@ -37,11 +37,8 @@ class BooksApp extends React.Component {
     };
 
     updateSearch = (e) => {
-
         this.setState({...this.state, searchValue: e.target.value});
-
         BooksAPI.search(e.target.value.trim(), 1).then((response) => {
-
             if (!response || response.error || this.state.searchValue.length < 1) {
                 this.setState({...this.state, searchResults: []});
                 return;
@@ -50,6 +47,7 @@ class BooksApp extends React.Component {
 
             this.state.books.forEach(shelfBook => {
                 searchBooks.forEach(searchBook => {
+
                     if (!searchBook.shelf) {
                         searchBook.shelf = 'none';
                     }
